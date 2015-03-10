@@ -29,6 +29,11 @@ function wrapMethod(module, methodName, wrapperFunction) {
 function activatorLast(module, methodName) {
     wrapMethod(module, methodName, function (origin) {
         return function () {
+            if (listeners.length === 0) {
+                origin.apply(module, arguments);
+                return;
+            }
+
             var listener = listeners[0];
 
             var args = Array.prototype.slice.apply(arguments);
@@ -51,5 +56,6 @@ function activatorLast(module, methodName) {
 module.exports = {
     apply: function () {
         activatorLast(require("fs"), "readFile");
+        activatorLast(require("dns"), "resolve");
     }
 };
