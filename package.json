@@ -1,0 +1,22 @@
+{
+  "name": "my-async-listener",
+  "version": "1.0.0",
+  "description": "async-listerner",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/wyvernnot/my-async-listener.git"
+  },
+  "keywords": [
+    "async-listener"
+  ],
+  "author": "wyvernnot",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/wyvernnot/my-async-listener/issues"
+  },
+  "homepage": "https://github.com/wyvernnot/my-async-listener"
+}
