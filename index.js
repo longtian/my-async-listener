@@ -1,8 +1,24 @@
 var listeners = [];
 
-process.addAsyncListener = function (object, data) {
-    object._data = data;
-    listeners.push(object);
+var HAS_CREATE = 1 << 1;
+var HAS_BEFORE = 1 << 2;
+var HAS_AFTER = 1 << 3;
+
+process.addAsyncListener = function (listenerObject, data) {
+    listenerObject._data = data;
+    listenerObject.flag = 0;
+
+    if (listenerObject.create) {
+        listenerObject.flag |= HAS_CREATE;
+    }
+    if (listenerObject.before) {
+        listenerObject.flag |= HAS_BEFORE;
+    }
+    if (listenerObject.after) {
+        listenerObject.flag |= HAS_AFTER;
+    }
+
+    listeners.push(listenerObject);
 };
 
 /**
@@ -41,13 +57,13 @@ function activatorLast(module, methodName) {
             var cb = args[arguments.length - 1];
             args[arguments.length - 1] = function () {
                 // before callback is called
-                listener.before.apply(listener, [listener, listener._data]);
+                listener.flag & HAS_BEFORE && listener.before.apply(listener, [listener, listener._data]);
                 cb.apply(this, arguments);
                 // after callback is called
-                listener.after.apply(listener, [listener, listener._data]);
+                listener.flag & HAS_AFTER && listener.after.apply(listener, [listener, listener._data]);
             };
 
-            listener.create.apply(listener, [listener, listener._data]);
+            listener.flag & HAS_CREATE && listener.create.apply(listener, [listener, listener._data]);
             origin.apply(module, args);
         };
     });
